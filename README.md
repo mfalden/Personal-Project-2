@@ -6,7 +6,7 @@ space as an obstacle, the player dies. The terminal is updated several times per
 barriers are randomly chosen from a list. 
 ## High-Level Flowchart: 
 - See GameControl for the basics.
-![Overview](DinoBrainstorm.png)
+![Overview](Dino_game_brainstorm.png)
 ## Methods
 GameControl: Controls whether the game should continue building or not.
 - Build the background
