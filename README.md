@@ -60,4 +60,12 @@ PlayingColumn, LastColumn, TopRow: These methods initialize variables for the co
 - int [name]
 - return [name]
 
+PlayerBehavior: This method accepts user input for the player controls. 
+- create ints currentRow, baseRow
+- initialize int maxValue = 5
+- if fancyConsole's getChar = code for a quick "up" arrow tap
+  - currentRow = Math.Min(currentRow + 1, maxValue)
+- if fancyConsole's getChar = code for a long "up" arrow hold
+  - currentRow = Math.Min(currentRow + 2, maxValue)
+
 
