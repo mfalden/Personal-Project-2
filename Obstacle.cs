@@ -5,63 +5,13 @@ using System.Linq;
 
 public class Obstacle
 {
-    // public int x;
-    // public int height;
 
-    // public Obstacle(int x, int height) {
-    //     this.x = x;
-    //     this.height = height;
-    // }
+    public int X;
+    public int Height;
+    public int SpaceBefore, SpaceAfter;
+    public int Length => SpaceAfter + SpaceBefore;
 
-    public static string RandomGenerator()
-    {
-        // Feedback (jcollard 2022-02-28): There are a few reasonable ways to do this
-        // I've created a new method for you called "GetRandomObstacle" below which I
-        // think will accomplish what you want using only things you have seen so far in this class.
-        // Below that, I've created a method called "FancyGetRandomObstacle" which, I believe, is a slightly
-        // more robust version.
-        // Study them and let me know if you have questions.
-        Random generator;
-        generator = new Random();
-        int randomNumber = generator.Next(1, 5);
-        return $"Obstacle{randomNumber}";
-    }
-
-
-    public static (List<string>, int, int) GetRandomObstacle()
-    {
-        // First, we make the return type of GetRandomObstacle match the return
-        // type of your Obstacle methods. This allows us to delegate one of them
-        // based on the random number generated
-        Random generator;
-        generator = new Random();
-        // This returns one of the numbers 0, 1, 2, 3, or 4
-        int randomNumber = generator.Next(0, 5);
-        if (randomNumber == 0)
-        {
-            return Obstacle0();
-        }
-        else if (randomNumber == 1)
-        {
-            return Obstacle1();
-        }
-        else if (randomNumber == 2)
-        {
-            return Obstacle2();
-        }
-        else if (randomNumber == 3)
-        {
-            return Obstacle3();
-        }
-        else
-        {//(randomNumber == 5) {
-            return Obstacle4();
-        }
-        // The major down side is that you have to add several more lines if you
-        // decide to make more of these
-    }
-
-    public static (List<string>, int, int) FancyGetRandomObstacle() 
+    public static (List<string>, int, int) GetRandomObstacle() 
     {
         // In C#, you can actually have a list of functions (methods as long as
         // they all return the same thing). In your case, you have a set of
@@ -101,6 +51,22 @@ public class Obstacle
         return (obstacle, length, height);
     }
 
+public static Obstacle Obstacle1x()
+    {
+        Obstacle o = new Obstacle();
+        o.X = 3; 
+        o.Height = 3;
+        o.SpaceBefore = 3;
+        o.SpaceAfter = 15;
+        return o;       
+
+    }
+    public static void DrawObstacle(Obstacle o)
+    {
+        
+
+    }
+
     public static (List<string>, int, int) Obstacle1()
     {
         List<string> obstacle = new List<string>();
@@ -125,7 +91,7 @@ public class Obstacle
     public static (List<string>, int, int) Obstacle3()
     {
         List<string> obstacle = new List<string>();
-        obstacle.Insert(0, "           #  ");
+        obstacle.Insert(0, "              ");
         obstacle.Insert(1, "           #  ");
         obstacle.Insert(2, "___________#__");
         int length = 15;

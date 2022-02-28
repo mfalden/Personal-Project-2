@@ -7,7 +7,7 @@ public class Program
     {
         
         Player player = new Player();
-        player.X = 0;
+        player.X = 1;
         player.IsJumping = false;
         player.EndJumpAt = -1;
 
@@ -16,9 +16,7 @@ public class Program
         int length; 
         int height;
         List<string> obstacle;
-        string randomObstacle = Obstacle.RandomGenerator();
-        //(obstacle, length, height) = Obstacle.$"{randomObstacle}"();
-        (obstacle, length, height) = Obstacle.Obstacle0();
+        (obstacle, length, height) = Obstacle.GetRandomObstacle();
         int x = 0;
         foreach (string line in obstacle)
         {
@@ -32,7 +30,8 @@ public class Program
             int input = FancyConsole.GetChar();
             char asChar = (char)input;
 
-            HandleJump(player, asChar, ticks);
+            //HandleJump(player, asChar, ticks);
+            FakeJump(player, asChar, ticks);
             FancyConsole.Sleep(200);
             FancyConsole.Refresh();
             ticks++;
@@ -45,6 +44,12 @@ public class Program
 
     }
 
+public static void FakeJump(Player player, char asChar, int ticks)
+{
+
+    FancyConsole.Write(7, player.X, "D");
+    FancyConsole.Write(7, player.X - 1, "_");
+}
     public static void HandleJump(Player player, char asChar, int ticks)
     {   
         if (asChar == 'j' && player.IsJumping == false)
