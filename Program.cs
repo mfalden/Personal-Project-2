@@ -5,10 +5,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        // List<Obstacle> obstacles = new List<Obstacle>();
-        // obstacles.Add(new Obstacle(7, 4));
-
-
+        
         Player player = new Player();
         player.X = 0;
         player.IsJumping = false;
@@ -16,63 +13,30 @@ public class Program
 
         int ticks = 0;
 
-
-
-        // Before this will work, you need to run
-        // dotnet add package dotnet-curses
         int length; 
         int height;
         List<string> obstacle;
-        (obstacle, length, height) = Obstacle.Obstacle1();
+        string randomObstacle = Obstacle.RandomGenerator();
+        //(obstacle, length, height) = Obstacle.$"{randomObstacle}"();
+        (obstacle, length, height) = Obstacle.Obstacle0();
         int x = 0;
         foreach (string line in obstacle)
         {
-            FancyConsole.Write(8 + x, 34, line);
+            FancyConsole.Write(5 + x, 10, line);
             x++;
         }
-        FancyConsole.SetColor(FancyColor.RED);
-        FancyConsole.Write(5, 5, "Hello");
-        FancyConsole.SetColor(FancyColor.BLUE);
-        FancyConsole.Write(6, 8, "World");
 
         while (true)
         {
+
             int input = FancyConsole.GetChar();
-
-
-            if (input != -1)
-            { // If no input was detected, GetChar returns -1
-                FancyConsole.SetColor(FancyColor.WHITE);
-                FancyConsole.Write(0, 0, $"Key Code: {input}    "); // Display the most recent key press code
-            }
-
             char asChar = (char)input;
+
             HandleJump(player, asChar, ticks);
-
-
-            if (asChar == 'a')
-            {
-                FancyConsole.SetColor(FancyColor.MAGENTA);
-                FancyConsole.Write(3, 0, "You pressed A!");
-            }
-            else
-            {
-                FancyConsole.Write(3, 0, "              ");
-            }
-
-            if (asChar == 'x')
-            {
-                break; // Exits the loop
-            }
-
-            if (asChar == 'c')
-            {
-                FancyConsole.Clear(); // Clears all text
-            }
-
-            FancyConsole.Sleep(17);
+            FancyConsole.Sleep(200);
             FancyConsole.Refresh();
             ticks++;
+            player.X++;
         }
     }
 
@@ -82,36 +46,92 @@ public class Program
     }
 
     public static void HandleJump(Player player, char asChar, int ticks)
-    {
+    {   
         if (asChar == 'j' && player.IsJumping == false)
         {
             player.IsJumping = true;
-            player.EndJumpAt = ticks + 120;
+            player.JumpStart = true;
+            player.EndJumpAt = ticks + 10;
         }
 
-        if (player.IsJumping && player.EndJumpAt < ticks)
+        if (asChar == 'j' && player.IsJumping == true)
+        {
+            player.IsDoubleJump = true;
+            player.EndJumpAt = ticks + 5;
+        }
+
+        if (player.IsJumping && player.IsDoubleJump && player.EndJumpAt < ticks)
         {
             player.IsJumping = false;
+            player.IsDoubleJump = false;
+            player.DoubleJumpEnd = true;
         }
-
-
-
-        if (ticks % 60 == 0)
+        if (player.IsJumping && !player.IsDoubleJump && player.EndJumpAt < ticks)
         {
-            FancyConsole.Write(7, player.X, " ");
-            FancyConsole.Write(10, player.X, " ");
-            player.X++;
+            player.IsJumping = false;
+            player.JumpEnd = true;
         }
-
-        if (player.IsJumping)
+// jump rules
+        if (player.IsJumping && player.JumpStart && !player.IsDoubleJump)
         {
-            FancyConsole.Write(7, player.X, "D");
-            FancyConsole.Write(10, player.X, " ");
+            FancyConsole.Write(6, player.X, " D");
+            FancyConsole.Write(7, player.X, "_");
+            player.JumpStart = false;
+        }
+        if (player.IsJumping && player.JumpStart && player.IsDoubleJump)
+        {
+            FancyConsole.Write(5, player.X, " D");
+            FancyConsole.Write(7, player.X, "_");
+            player.JumpStart = false;
+        }
+        if (player.IsJumping && !player.JumpStart && !player.IsDoubleJump)
+        {
+            FancyConsole.Write(6, player.X, " D");
+        }
+        if (player.IsJumping && !player.JumpStart && player.IsDoubleJump)
+        {
+            FancyConsole.Write(5, player.X, " D");
+            FancyConsole.Write(6, player.X, " "); 
+        }
+        if (player.JumpEnd)
+        {
+            FancyConsole.Write(6, player.X, "  ");
+            FancyConsole.Write(7, player.X, "_D"); 
+            player.JumpEnd = false;
+        }
+        if (player.DoubleJumpEnd)
+        {
+            FancyConsole.Write(6, player.X, "  ");
+            FancyConsole.Write(7, player.X, "_D"); 
+            player.DoubleJumpEnd = false;
         }
         else
         {
-            FancyConsole.Write(10, player.X, "D");
-            FancyConsole.Write(7, player.X, " ");
+            FancyConsole.Write(7, player.X, "_D"); 
         }
+        // if (player.IsJumping)
+        // {
+        //     if (player.IsDoubleJump)
+        // {
+        //     FancyConsole.Write(5, player.X, " D");
+        //     FancyConsole.Write(6, player.X, "  ");
+        //     FancyConsole.Write(7, player.X, "_");
+        // }
+        //     else
+        // {
+        //     FancyConsole.Write(5, player.X, "  ");
+        //     FancyConsole.Write(6, player.X, " D");
+        //     FancyConsole.Write(7, player.X, "_");
+        // }
+        // }
+
+        // else
+        // {
+        // FancyConsole.Write(7, player.X, "_D");
+        // FancyConsole.Write(6, player.X, "  ");
+        // FancyConsole.Write(5, player.X, "  ");
+
+        // }
+
     }
 }
