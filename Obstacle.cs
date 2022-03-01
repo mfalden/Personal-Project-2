@@ -9,7 +9,7 @@ public class Obstacle
     public int X;
     public int Height;
     public int SpaceBefore, SpaceAfter;
-    public int Length => SpaceAfter + SpaceBefore;
+    public int Length => SpaceAfter + SpaceBefore + 1;
 
     public static (List<string>, int, int) GetRandomObstacle() 
     {
@@ -54,12 +54,11 @@ public class Obstacle
 public static Obstacle Obstacle1x()
     {
         Obstacle o = new Obstacle();
-        o.X = 3; 
-        o.Height = 3;
-        o.SpaceBefore = 3;
-        o.SpaceAfter = 15;
-        return o;       
-
+        o.X = 3; // total coordinate - 1
+        o.Height = 2; // total height - 1
+        o.SpaceBefore = 2; // total length - 1
+        o.SpaceAfter = 15; // total length
+        return o;
     }
     public static void DrawObstacle(Obstacle o)
     {

@@ -3,26 +3,31 @@ using System.Collections.Generic;
 
 public class Program
 {
+    static int baseRow = 7;
+    static int maxRow = 5;
+    int totalDistance;
     public static void Main(string[] args)
     {
-        
+
         Player player = new Player();
         player.X = 1;
         player.IsJumping = false;
         player.EndJumpAt = -1;
+        
 
         int ticks = 0;
 
-        int length; 
-        int height;
-        List<string> obstacle;
-        (obstacle, length, height) = Obstacle.GetRandomObstacle();
-        int x = 0;
-        foreach (string line in obstacle)
-        {
-            FancyConsole.Write(5 + x, 10, line);
-            x++;
-        }
+        // int length; 
+        // int height;
+        // List<string> obstacle;
+        // (obstacle, length, height) = Obstacle.GetRandomObstacle();
+        // int x = 0;
+        // foreach (string line in obstacle)
+        // {
+        //     FancyConsole.Write(5 + x, 10, line);
+        //     x++;
+        // }
+        DrawObstacles();
 
         while (true)
         {
@@ -31,7 +36,8 @@ public class Program
             char asChar = (char)input;
 
             //HandleJump(player, asChar, ticks);
-            FakeJump(player, asChar, ticks);
+            
+            //FakeJump(player, asChar, ticks);
             FancyConsole.Sleep(200);
             FancyConsole.Refresh();
             ticks++;
@@ -39,9 +45,31 @@ public class Program
         }
     }
 
-    public static void DrawObstacles(List<Obstacle> obstacles)
+    public static void DrawObstacles()
     {
-
+       Obstacle o = Obstacle.Obstacle1x();
+       int columnNumber = 0; // + totaldistance
+       int drawnHeight = 0;
+       // x, height, SpaceBefore, SpaceAfter
+       while (columnNumber <= o.Length)
+       {
+           while (columnNumber < o.X)
+           {
+               FancyConsole.Write(baseRow, columnNumber, "_");
+               columnNumber++;
+           }
+           if (columnNumber == o.X)
+           {
+               while (drawnHeight <= o.Height)
+               {
+               FancyConsole.Write(baseRow - drawnHeight, columnNumber, "#");
+               drawnHeight++;
+               }
+               columnNumber++;
+           }
+           FancyConsole.Write(baseRow, columnNumber, "_");
+           columnNumber++;
+       }
     }
 
 public static void FakeJump(Player player, char asChar, int ticks)
