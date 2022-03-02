@@ -11,34 +11,18 @@ public class Obstacle
     public int SpaceBefore, SpaceAfter;
     public int Length => SpaceAfter + SpaceBefore + 1;
 
-    public static (List<string>, int, int) GetRandomObstacle() 
+    public static Obstacle GetRandomObstacle() 
     {
-        // In C#, you can actually have a list of functions (methods as long as
-        // they all return the same thing). In your case, you have a set of
-        // methods which return (List<string>, int, int). We can specify a
-        // function that takes no arguments and returns that as
-        // Func<(List<string>, int, int)>. Then, if we want a list of those we
-        // can say:
-        List<Func<(List<string>, int, int)>> possibleObstacles = new List<Func<(List<string>, int, int)>>();
+        List<Func<Obstacle>> possibleObstacles = new List<Func<Obstacle>>();
 
-        // Next we can add each of your methods to the list:
-        possibleObstacles.Add(Obstacle0);
-        possibleObstacles.Add(Obstacle1);
-        possibleObstacles.Add(Obstacle2);
-        possibleObstacles.Add(Obstacle3);
-        possibleObstacles.Add(Obstacle4);
+        possibleObstacles.Add(Obstacle1x);
+        possibleObstacles.Add(Obstacle0x);
+        possibleObstacles.Add(Obstacle0x);
 
-        // Finally, we can generate a random number based on the size of the list:
         Random generator;
         generator = new Random();
-        // This returns one of the indices of the list
         int randomNumber = generator.Next(0, possibleObstacles.Count);
-        // Finally, we get the method associated with that index and we Invoke it.
         return possibleObstacles[randomNumber].Invoke();
-
-        // The main benefit here is that you only need to add new elements to
-        // the list (or remove them) and you do not need to change any other
-        // code.
     }
     public static (List<string>, int, int) Obstacle0()
     {
@@ -49,6 +33,15 @@ public class Obstacle
         int length = 19;
         int height = 3;
         return (obstacle, length, height);
+    }
+public static Obstacle Obstacle0x()
+    {
+        Obstacle o = new Obstacle();
+        o.X = 1; // total coordinate - 1
+        o.Height = -1; // total height - 1
+        o.SpaceBefore = 0; // total length - 1
+        o.SpaceAfter = 19; // total length
+        return o;
     }
 
 public static Obstacle Obstacle1x()

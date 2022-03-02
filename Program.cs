@@ -5,7 +5,7 @@ public class Program
 {
     static int baseRow = 7;
     static int maxRow = 5;
-    int totalDistance;
+    int totalDistance = 0;
     public static void Main(string[] args)
     {
 
@@ -13,30 +13,22 @@ public class Program
         player.X = 1;
         player.IsJumping = false;
         player.EndJumpAt = -1;
+
         
 
         int ticks = 0;
 
-        // int length; 
-        // int height;
-        // List<string> obstacle;
-        // (obstacle, length, height) = Obstacle.GetRandomObstacle();
-        // int x = 0;
-        // foreach (string line in obstacle)
-        // {
-        //     FancyConsole.Write(5 + x, 10, line);
-        //     x++;
-        // }
-        DrawObstacles();
-
+        List<Obstacle> obstacles = new List<Obstacle>();
+        
         while (true)
         {
-
+            
             int input = FancyConsole.GetChar();
             char asChar = (char)input;
+            DrawObstacles(ticks, AddObstacle(ticks, obstacles));
 
             //HandleJump(player, asChar, ticks);
-            
+
             //FakeJump(player, asChar, ticks);
             FancyConsole.Sleep(200);
             FancyConsole.Refresh();
@@ -45,10 +37,11 @@ public class Program
         }
     }
 
-    public static void DrawObstacles()
+    public static (int, int) DrawObstacles(int ticks)
     {
-       Obstacle o = Obstacle.Obstacle1x();
-       int columnNumber = 0; // + totaldistance
+       Obstacle o = Obstacle.GetRandomObstacle();
+       int columnNumber = ticks;
+       int finalColumn = columnNumber + o.Length;
        int drawnHeight = 0;
        // x, height, SpaceBefore, SpaceAfter
        while (columnNumber <= o.Length)
@@ -70,6 +63,57 @@ public class Program
            FancyConsole.Write(baseRow, columnNumber, "_");
            columnNumber++;
        }
+       return (columnNumber, finalColumn);
+    }
+
+    public static List<Obstacle> AddObstacle(int ticks, List<Obstacle> obstacles)
+    {
+        int totalWidth = 0;
+        foreach(Obstacle o in obstacles)
+        {
+            totalWidth = totalWidth + o.Length;
+        }
+        if (totalWidth < ticks)
+        {
+            obstacles.Add(Obstacle.GetRandomObstacle());
+        }
+        return obstacles;
+    }
+
+    public static void DrawObstacles(int ticks, List<Obstacle> obstacles)
+    {
+        // need to update and store values externally to keep them updated correctly.
+        int offsetX = 0;
+        //    Obstacle o = Obstacle.GetRandomObstacle();
+        foreach (Obstacle o in obstacles)
+        {
+            int columnNumber = 0;
+            
+            // int columnNumber = ticks;
+            // int finalColumn = columnNumber + o.Length;
+            int drawnHeight = 0;
+            // x, height, SpaceBefore, SpaceAfter
+            while (columnNumber <= o.Length)
+            {
+                while (columnNumber < o.X)
+                {
+                    FancyConsole.Write(baseRow, columnNumber + offsetX, "_");
+                    columnNumber++;
+                }
+                if (columnNumber == o.X)
+                {
+                    while (drawnHeight <= o.Height)
+                    {
+                        FancyConsole.Write(baseRow - drawnHeight, columnNumber + offsetX, "#");
+                        drawnHeight++;
+                    }
+                    columnNumber++;
+                }
+                FancyConsole.Write(baseRow, columnNumber + offsetX, "_");
+                columnNumber++;
+            }
+            offsetX += o.Length;
+        }
     }
 
 public static void FakeJump(Player player, char asChar, int ticks)
