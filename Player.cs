@@ -73,5 +73,9 @@ public class Player {
         {
             p.Col = p.Col + 1;
         }
+
+        // Ensures that p.Col is between 1 and 20
+        p.Col = System.Math.Clamp(p.Col, 1, 20);
+        p.Row = System.Math.Clamp(p.Row, 2, 20);
     }
 }

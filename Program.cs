@@ -47,6 +47,7 @@ public class Program
     public static void PlayGame(Player player, List<Enemy> enemies, char input, int ticks)
     {
         FancyConsole.Clear();
+        DrawRectangle(2, 1, 20, 20);
         Player.DrawPlayer(player);
         Player.HandleInput(input, player);
         Player.DrawHealth(player);
@@ -54,7 +55,7 @@ public class Program
         // Add a new enemy every 10 ticks
         if (ticks % 50 == 0)
         {
-            enemies.Add(Enemy.CreateRandomEnemy(10, 10, 10));
+            enemies.Add(Enemy.CreateRandomEnemy(20, 20, 15));
         }
 
         Enemy.MoveEnemies(player, enemies, ticks);
@@ -63,6 +64,18 @@ public class Program
 
         FancyConsole.Sleep(20);
         FancyConsole.Refresh();
+    }
+
+    public static void DrawRectangle(int top, int left, int width, int height)
+    {
+        for (int row = top; row < (top + height); row++)
+        {
+            for (int col = left; col < (left + width); col++)
+            {
+                FancyConsole.SetColor(FancyColor.WHITE);
+                FancyConsole.Write(row, col, ".");
+            }
+        }
     }
 
     /// <summary>
