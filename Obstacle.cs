@@ -18,28 +18,19 @@ public class Obstacle
         possibleObstacles.Add(Obstacle1x);
         possibleObstacles.Add(Obstacle0x);
         possibleObstacles.Add(Obstacle0x);
+        possibleObstacles.Add(Obstacle2x);
 
         Random generator;
         generator = new Random();
         int randomNumber = generator.Next(0, possibleObstacles.Count);
         return possibleObstacles[randomNumber].Invoke();
     }
-    public static (List<string>, int, int) Obstacle0()
-    {
-        List<string> obstacle = new List<string>();
-        obstacle.Insert(0, "                  ");
-        obstacle.Insert(1, "                  ");
-        obstacle.Insert(2, "__________________");
-        int length = 19;
-        int height = 3;
-        return (obstacle, length, height);
-    }
 public static Obstacle Obstacle0x()
     {
         Obstacle o = new Obstacle();
-        o.X = 1; // total coordinate - 1
+        o.X = 0; // total coordinate - 1
         o.Height = -1; // total height - 1
-        o.SpaceBefore = 0; // total length - 1
+        o.SpaceBefore = 1; // total length - 1
         o.SpaceAfter = 19; // total length
         return o;
     }
@@ -53,10 +44,15 @@ public static Obstacle Obstacle1x()
         o.SpaceAfter = 15; // total length
         return o;
     }
-    public static void DrawObstacle(Obstacle o)
+    public static (List<string>, int, int) Obstacle0()
     {
-        
-
+        List<string> obstacle = new List<string>();
+        obstacle.Insert(0, "                  ");
+        obstacle.Insert(1, "                  ");
+        obstacle.Insert(2, "__________________");
+        int length = 19;
+        int height = 3;
+        return (obstacle, length, height);
     }
 
     public static (List<string>, int, int) Obstacle1()
@@ -69,6 +65,16 @@ public static Obstacle Obstacle1x()
         int height = 3;
         return (obstacle, length, height);
     }
+       public static Obstacle Obstacle2x()
+    {
+        Obstacle o = new Obstacle();
+        o.X = 8; // total coordinate - 1
+        o.Height = 1; // total height - 1
+        o.SpaceBefore = 7; // total length - 1
+        o.SpaceAfter = 15; // total length
+        return o;
+    }
+
     public static (List<string>, int, int) Obstacle2()
     {
         List<string> obstacle = new List<string>();

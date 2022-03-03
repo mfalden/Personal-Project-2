@@ -5,7 +5,8 @@ public class Program
 {
     static int baseRow = 7;
     static int maxRow = 5;
-    int totalDistance = 0;
+    public int totalDistance = 0;
+    public int columnNumber = 0;
     public static void Main(string[] args)
     {
 
@@ -15,7 +16,6 @@ public class Program
         player.EndJumpAt = -1;
 
         
-
         int ticks = 0;
 
         List<Obstacle> obstacles = new List<Obstacle>();
@@ -25,47 +25,39 @@ public class Program
             
             int input = FancyConsole.GetChar();
             char asChar = (char)input;
-            DrawObstacles(ticks, AddObstacle(ticks, obstacles));
 
             //HandleJump(player, asChar, ticks);
 
             //FakeJump(player, asChar, ticks);
+            DrawObstacles(ticks, AddObstacle(ticks, obstacles));
             FancyConsole.Sleep(200);
             FancyConsole.Refresh();
             ticks++;
             player.X++;
+
         }
     }
-
-    public static (int, int) DrawObstacles(int ticks)
+    public static void MainBrainstorm()
     {
-       Obstacle o = Obstacle.GetRandomObstacle();
-       int columnNumber = ticks;
-       int finalColumn = columnNumber + o.Length;
-       int drawnHeight = 0;
-       // x, height, SpaceBefore, SpaceAfter
-       while (columnNumber <= o.Length)
-       {
-           while (columnNumber < o.X)
-           {
-               FancyConsole.Write(baseRow, columnNumber, "_");
-               columnNumber++;
-           }
-           if (columnNumber == o.X)
-           {
-               while (drawnHeight <= o.Height)
-               {
-               FancyConsole.Write(baseRow - drawnHeight, columnNumber, "#");
-               drawnHeight++;
-               }
-               columnNumber++;
-           }
-           FancyConsole.Write(baseRow, columnNumber, "_");
-           columnNumber++;
-       }
-       return (columnNumber, finalColumn);
+        bool hasgamestarted = false;
+        if (!hasgamestarted)
+        {
+           InitializeScreenBrainstorm();
+        }
+        if (hasgamestarted)
+        {
+            // load variables
+            PlayBrainStorm();
+        }
     }
+    public static void InitializeScreenBrainstorm()
+    {
 
+    }
+    public static void PlayBrainStorm()
+    {
+
+    }
     public static List<Obstacle> AddObstacle(int ticks, List<Obstacle> obstacles)
     {
         int totalWidth = 0;
@@ -75,6 +67,7 @@ public class Program
         }
         if (totalWidth < ticks)
         {
+
             obstacles.Add(Obstacle.GetRandomObstacle());
         }
         return obstacles;
@@ -88,11 +81,13 @@ public class Program
         foreach (Obstacle o in obstacles)
         {
             int columnNumber = 0;
+            int drawnHeight = 0;
             
             // int columnNumber = ticks;
             // int finalColumn = columnNumber + o.Length;
-            int drawnHeight = 0;
+            
             // x, height, SpaceBefore, SpaceAfter
+        
             while (columnNumber <= o.Length)
             {
                 while (columnNumber < o.X)
@@ -102,7 +97,7 @@ public class Program
                 }
                 if (columnNumber == o.X)
                 {
-                    while (drawnHeight <= o.Height)
+                   while (drawnHeight <= o.Height)
                     {
                         FancyConsole.Write(baseRow - drawnHeight, columnNumber + offsetX, "#");
                         drawnHeight++;
@@ -113,6 +108,8 @@ public class Program
                 columnNumber++;
             }
             offsetX += o.Length;
+
+
         }
     }
 
