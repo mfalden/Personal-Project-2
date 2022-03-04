@@ -1,0 +1,219 @@
+﻿using System;
+using System.Collections.Generic;
+
+public class OldProgram
+{
+    static int baseRow = 7;
+    static int maxRow = 5;
+    static int totalDistance = 0;
+    static int columnNumber = 0;
+    static int drawnHeight = 0;
+    static int ticks = 0;
+    static int offsetX = 0;
+    public static void Main(string[] args)
+    {
+
+        Player player = new Player();
+        player.X = 1;
+        player.IsJumping = false;
+        player.EndJumpAt = -1;
+
+        List<Obstacle> obstacles = new List<Obstacle>();
+        
+        while (true)
+        {
+            
+            int input = FancyConsole.GetChar();
+            char asChar = (char)input;
+
+            //HandleJump(player, asChar, ticks);
+
+            //FakeJump(player, asChar, ticks);
+            DrawObstacles(AddObstacle(obstacles));
+            FancyConsole.Sleep(200);
+            FancyConsole.Refresh();
+            offsetX = player.X - 1;
+            ticks++;
+            player.X++;
+
+        }
+    }
+    public static void MainBrainstorm()
+    {
+        
+        bool hasgamestarted = false;
+        if (!hasgamestarted)
+        {
+           InitializeScreenBrainstorm();
+           hasgamestarted = true;
+        }
+        while (hasgamestarted)
+        {
+            PlayBrainStorm();
+        }
+    }
+    public static void InitializeScreenBrainstorm()
+    {
+    
+    }
+    public static void PlayBrainStorm()
+    {       Player player = new Player();
+            player.X = 1;
+            player.IsJumping = false;
+            player.EndJumpAt = -1;
+
+            List<Obstacle> obstacles = new List<Obstacle>();
+            int input = FancyConsole.GetChar();
+            char asChar = (char)input;
+
+            DrawObstacles(AddObstacle(obstacles));
+            FancyConsole.Sleep(200);
+            FancyConsole.Refresh();
+            ticks++;
+            player.X++;
+    }
+    public static List<Obstacle> AddObstacle(List<Obstacle> obstacles)
+    {
+    
+        foreach(Obstacle o in obstacles)
+        {
+            totalDistance += o.Length;
+        }
+        if (totalDistance < ticks)
+        {
+            columnNumber = 0;
+            drawnHeight = 0;
+            obstacles.Add(Obstacle.GetRandomObstacle());
+        }
+        return obstacles;
+    }
+
+    public static void DrawObstacles(List<Obstacle> obstacles)
+    {
+        // need to update and store values externally to keep them updated correctly.
+        //    Obstacle o = Obstacle.GetRandomObstacle();
+        foreach (Obstacle o in obstacles)
+        {
+            // columnNumber = 0;
+            // drawnHeight = 0;
+            
+        
+            while (columnNumber <= o.Length) //w
+            {
+                while (columnNumber < o.X) //w
+                {
+                    FancyConsole.Write(baseRow, columnNumber + offsetX, "_");
+                    columnNumber++;
+                }
+                if (columnNumber == o.X)
+                {
+                   while (drawnHeight <= o.Height) //w
+                    {
+                        FancyConsole.Write(baseRow - drawnHeight, columnNumber + offsetX, "#");
+                        drawnHeight++;
+                    }
+                    columnNumber++;
+                }
+                FancyConsole.Write(baseRow, columnNumber + offsetX, "_");
+                columnNumber++;
+            }
+            
+        }
+    }
+
+public static void FakeJump(Player player, char asChar, int ticks)
+{
+
+    FancyConsole.Write(7, player.X, "D");
+    FancyConsole.Write(7, player.X - 1, "_");
+}
+    public static void HandleJump(Player player, char asChar, int ticks)
+    {   
+        if (asChar == 'j' && player.IsJumping == false)
+        {
+            player.IsJumping = true;
+            player.JumpStart = true;
+            player.EndJumpAt = ticks + 10;
+        }
+
+        if (asChar == 'j' && player.IsJumping == true)
+        {
+            player.IsDoubleJump = true;
+            player.EndJumpAt = ticks + 5;
+        }
+
+        if (player.IsJumping && player.IsDoubleJump && player.EndJumpAt < ticks)
+        {
+            player.IsJumping = false;
+            player.IsDoubleJump = false;
+            player.DoubleJumpEnd = true;
+        }
+        if (player.IsJumping && !player.IsDoubleJump && player.EndJumpAt < ticks)
+        {
+            player.IsJumping = false;
+            player.JumpEnd = true;
+        }
+// jump rules
+        if (player.IsJumping && player.JumpStart && !player.IsDoubleJump)
+        {
+            FancyConsole.Write(6, player.X, " D");
+            FancyConsole.Write(7, player.X, "_");
+            player.JumpStart = false;
+        }
+        if (player.IsJumping && player.JumpStart && player.IsDoubleJump)
+        {
+            FancyConsole.Write(5, player.X, " D");
+            FancyConsole.Write(7, player.X, "_");
+            player.JumpStart = false;
+        }
+        if (player.IsJumping && !player.JumpStart && !player.IsDoubleJump)
+        {
+            FancyConsole.Write(6, player.X, " D");
+        }
+        if (player.IsJumping && !player.JumpStart && player.IsDoubleJump)
+        {
+            FancyConsole.Write(5, player.X, " D");
+            FancyConsole.Write(6, player.X, " "); 
+        }
+        if (player.JumpEnd)
+        {
+            FancyConsole.Write(6, player.X, "  ");
+            FancyConsole.Write(7, player.X, "_D"); 
+            player.JumpEnd = false;
+        }
+        if (player.DoubleJumpEnd)
+        {
+            FancyConsole.Write(6, player.X, "  ");
+            FancyConsole.Write(7, player.X, "_D"); 
+            player.DoubleJumpEnd = false;
+        }
+        else
+        {
+            FancyConsole.Write(7, player.X, "_D"); 
+        }
+        // if (player.IsJumping)
+        // {
+        //     if (player.IsDoubleJump)
+        // {
+        //     FancyConsole.Write(5, player.X, " D");
+        //     FancyConsole.Write(6, player.X, "  ");
+        //     FancyConsole.Write(7, player.X, "_");
+        // }
+        //     else
+        // {
+        //     FancyConsole.Write(5, player.X, "  ");
+        //     FancyConsole.Write(6, player.X, " D");
+        //     FancyConsole.Write(7, player.X, "_");
+        // }
+        // }
+
+        // else
+        // {
+        // FancyConsole.Write(7, player.X, "_D");
+        // FancyConsole.Write(6, player.X, "  ");
+        // FancyConsole.Write(5, player.X, "  ");
+
+        // }
+
+    }
+}
