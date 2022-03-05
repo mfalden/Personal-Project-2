@@ -36,13 +36,14 @@ public class Program
     {
         if (offsetColumn + columnNumber > obstacleProgress)
         {
+            // offsetColumn used twice. In running, need a new column
             obstacles.Add(Obstacle.GetRandomObstacle());
         }
         return obstacles;
     }
     public static void InitializeScreen(List<Obstacle> obstacles)
     {
-
+        columnNumber = 0;
         DrawAllObstacles(AddObstacle(obstacles));
     }
     public static void DrawAllObstacles(List<Obstacle> obstacles)
@@ -70,7 +71,7 @@ public class Program
     }
     public static void PlayBrainStorm()
     {
-
+        
     }
     public static void AllDrawObstacles()
     {
