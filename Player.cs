@@ -1,13 +1,11 @@
 public class Player {
-    public int Row;
-    public int Col;
+    public int Row, Col;
     public int TotalSteps = 0;
 
     /// <summary>
-    /// Handles the players input. WASD control the players movement.
+    /// Given an input, a player, and a maze, handles the players input. WASD control the players movement.
+    /// A player cannot move into a position that is a wall within the maze.
     /// </summary>
-    /// <param name="input"></param>
-    /// <param name="p"></param>
     public static void HandleInput(char input, Player p, Maze m)
     {
         int candidateRow = p.Row;
@@ -41,8 +39,9 @@ public class Player {
         }
     }
 
-    
-
+    /// <summary>
+    /// Displays the players current position and total number of moves in the top left of the screen.
+    /// </summary>
     public static void DrawInfo(Player player)
     {
         FancyConsole.SetColor(FancyColor.WHITE);

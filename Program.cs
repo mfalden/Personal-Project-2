@@ -13,6 +13,7 @@ public class Program
         player.Col = maze.StartCol;
         int ticks = 0;
 
+        // Specify the View Port details
         int ViewPortRadiusWidth = 8;
         int ViewPortradiusHeight = 4;
         int ViewPortCenterRow = 7;
@@ -37,9 +38,19 @@ public class Program
         }
     }
 
+    /// <summary>
+    /// Given the elements to draw on the screen, the center position on the screen to draw, and the size of the view port to draw
+    /// draws a rectangular view port to the screen with the player's position centered.
+    /// </summary>
+    /// <param name="player"></param>
+    /// <param name="maze"></param>
+    /// <param name="centerRow"></param>
+    /// <param name="centerCol"></param>
+    /// <param name="radiusWidth"></param>
+    /// <param name="radiusHeight"></param>
     public static void DrawViewPort(Player player, Maze maze, int centerRow, int centerCol, int radiusWidth, int radiusHeight)
     {
-        // Calculate the viewport window size relative to the player's vision radius
+        // Calculate the viewport window size relative to the specified radius
         int MinRow = player.Row - radiusHeight;
         int MinCol = player.Col - radiusWidth;
         int MaxRow = player.Row + radiusHeight;
@@ -87,6 +98,9 @@ public class Program
         FancyConsole.Write(centerRow, centerCol, "A");
     }
 
+    /// <summary>
+    /// Calculates which character to draw at the border of a view port.
+    /// </summary>
     private static char GetBorderCharacter(int row, int col, int minRow, int minCol, int maxRow, int maxCol)
     {
         // We are in the corner if (row is the min or max) AND (col is the min or max)

@@ -4,13 +4,28 @@ using System.Linq;
 
 public class Maze
 {
+    /// <summary>
+    /// A list of rows in this maze
+    /// </summary>
     public List<string> Rows;
-    public int StartRow;
-    public int StartCol;
 
-    public int ExitRow;
-    public int ExitCol;
+    /// <summary>
+    /// The starting position in this maze.
+    /// </summary>
+    public int StartRow, StartCol;
 
+    /// <summary>
+    /// The exit position of this maze.
+    /// </summary>
+    public int ExitRow, ExitCol;
+
+    /// <summary>
+    /// Given the path to a text file, load it as a maze
+    /// Scans for an 'S' character and sets that to be the starting position.
+    /// Scans for an 'X' character and sets that to be the ending position.
+    /// </summary>
+    /// <param name="filename"></param>
+    /// <returns></returns>
     public static Maze LoadMaze(string filename)
     {
         Maze maze = new Maze();
@@ -41,6 +56,10 @@ public class Maze
         return maze;
     }
 
+    /// <summary>
+    /// Given a maze, a row, and a column, determines if the specified position
+    /// is a wall. Any space outside the bounds of a maze is considered a wall.
+    /// </summary>
     public static bool IsWall(Maze m, int row, int col)
     {
         // If we are out of bounds, return true.
@@ -58,6 +77,10 @@ public class Maze
         return m.Rows[row][col] == '#';
     }
 
+    /// <summary>
+    /// Given a maze, a row, and a column, determines the color and character to 
+    /// draw at that position. Any position outside of the maze is considered a wall.
+    /// </summary>
     public static (FancyColor, char) GetCharacter(Maze m, int row, int col)
     {
         // If we are out of bounds, return a white wall.
@@ -76,6 +99,9 @@ public class Maze
         return (color, value);
     }
     
+    /// <summary>
+    /// A helper method to determine the color of a character
+    /// </summary>
     public static FancyColor GetCharacterColor(char ch)
     {
         if (ch == ' ') return FancyColor.WHITE;
