@@ -7,15 +7,17 @@ public class Program
     public static void Main(string[] args)
     {
 
+        Maze maze = Maze.LoadMaze("maze.txt");
         Player player = new Player();
-        player.Row = 5;
-        player.Col = 5;
-        player.Health = 10;
-
-
+        player.Row = maze.StartRow;
+        player.Col = maze.StartCol;
         int ticks = 0;
 
-        List<Enemy> enemies = new List<Enemy>();
+        int ViewPortRadiusWidth = 8;
+        int ViewPortradiusHeight = 4;
+        int ViewPortCenterRow = 7;
+        int ViewPortCenterColumn = 10;
+
 
         while (true)
         {
@@ -23,101 +25,88 @@ public class Program
             int input = FancyConsole.GetChar();
             char asChar = (char)input;
 
-            if (player.Health > 0)
-            {
-                PlayGame(player, enemies, asChar, ticks);
-            } 
-            else 
-            {
-                GameOverScreen(player, enemies, asChar, ticks);
-            }
+            FancyConsole.Clear();
 
+            Player.HandleInput(asChar, player, maze);
+            Player.DrawInfo(player);
+            Program.DrawViewPort(player, maze, ViewPortCenterRow, ViewPortCenterColumn, ViewPortRadiusWidth, ViewPortradiusHeight);
 
+            FancyConsole.Refresh();
+            FancyConsole.Sleep(20);
             ticks++;
         }
     }
 
-    /// <summary>
-    /// Runs the Game
-    /// </summary>
-    /// <param name="player"></param>
-    /// <param name="enemies"></param>
-    /// <param name="input"></param>
-    /// <param name="ticks"></param>
-    public static void PlayGame(Player player, List<Enemy> enemies, char input, int ticks)
+    public static void DrawViewPort(Player player, Maze maze, int centerRow, int centerCol, int radiusWidth, int radiusHeight)
     {
-        FancyConsole.Clear();
-        DrawRectangle(2, 1, 20, 20);
-        Player.DrawPlayer(player);
-        Player.HandleInput(input, player);
-        Player.DrawHealth(player);
+        // Calculate the viewport window size relative to the player's vision radius
+        int MinRow = player.Row - radiusHeight;
+        int MinCol = player.Col - radiusWidth;
+        int MaxRow = player.Row + radiusHeight;
+        int MaxCol = player.Col + radiusWidth;
 
-        // Add a new enemy every 10 ticks
-        if (ticks % 50 == 0)
+
+        // Start at the first row
+        int row = MinRow;
+        // Loop through each row we want to draw
+        while (row <= MaxRow)
         {
-            enemies.Add(Enemy.CreateRandomEnemy(20, 20, 15));
-        }
-
-        Enemy.MoveEnemies(player, enemies, ticks);
-        Enemy.DestroyEnemies(enemies);
-        Enemy.DrawEnemies(enemies);
-
-        FancyConsole.Sleep(20);
-        FancyConsole.Refresh();
-    }
-
-    public static void DrawRectangle(int top, int left, int width, int height)
-    {
-        for (int row = top; row < (top + height); row++)
-        {
-            for (int col = left; col < (left + width); col++)
+            // Start at the first column
+            int col = MinCol;
+            // Loop through each column we want to draw
+            while (col <= MaxCol)
             {
-                FancyConsole.SetColor(FancyColor.WHITE);
-                FancyConsole.Write(row, col, ".");
+                
+                // Calculate the offset, this is based on where we want to draw
+                // the center of the view port and then relative to the player's
+                // position This centers the player at the middle of the
+                // viewport
+                int offsetRow = centerRow - player.Row;
+                int offsetCol = centerCol - player.Col;
+
+                // Retrieve the character to be drawn.
+                (FancyColor color, char ch) = Maze.GetCharacter(maze, row, col);
+
+                // If we are at the edge of the view port, draw a border instead
+                if (row == MinRow || row == MaxRow || col == MinCol || col == MaxCol) 
+                {
+                    color = FancyColor.WHITE;
+                    ch = GetBorderCharacter(row, col, MinRow, MinCol, MaxRow, MaxCol);
+                }
+                FancyConsole.SetColor(color);
+                FancyConsole.Write(offsetRow + row, offsetCol + col, $"{ch}");
+                // Go to the next column
+                col = col + 1;
             }
+            // Go to the nex trow
+            row = row + 1;
         }
+
+        // Finally, draw the player at the center of the view port.
+        FancyConsole.SetColor(FancyColor.GREEN);
+        FancyConsole.Write(centerRow, centerCol, "A");
     }
 
-    /// <summary>
-    /// Displays a "fancy" game over screen and waits for the user to press space to restart.
-    /// </summary>
-    /// <param name="player"></param>
-    /// <param name="enemies"></param>
-    /// <param name="input"></param>
-    /// <param name="ticks"></param>
-    public static void GameOverScreen(Player player, List<Enemy> enemies, char input, int ticks)
+    private static char GetBorderCharacter(int row, int col, int minRow, int minCol, int maxRow, int maxCol)
     {
-        
-        List<FancyColor> colors = new List<FancyColor>();
-        colors.Add(FancyColor.RED);
-        colors.Add(FancyColor.BLUE);
-        colors.Add(FancyColor.CYAN);
-        colors.Add(FancyColor.GREEN);
-        colors.Add(FancyColor.MAGENTA);
-        colors.Add(FancyColor.WHITE);
-        colors.Add(FancyColor.YELLOW);
-        string message = "GAME OVER! Press Space To Restart!";
-        int color = ticks;
-        int column = 5;
-        FancyConsole.Clear();
-        foreach(char ch in message)
+        // We are in the corner if (row is the min or max) AND (col is the min or max)
+        if ((row == minRow || row == maxRow) && (col == minCol || col == maxCol))
         {
-            FancyConsole.SetColor(colors[color % colors.Count]);
-            FancyConsole.Write(5, column, $"{ch}");
-            color++;
-            column++;
+            return '+';
         }
-        FancyConsole.Sleep(100);
-        FancyConsole.Refresh();
 
-        // If the player presses space, reset the game
-        if (input == ' ')
+        // If we are the top or bottom edge
+        if (row == minRow || row == maxRow)
         {
-            player.Row = 5;
-            player.Col = 5;
-            player.Health = 10;
-            player.IsHurt = false;
-            enemies.Clear();
+            return '-';
         }
+
+        // If we are the left or right edge
+        if (col == minCol || col == maxCol)
+        {
+            return '|';
+        }
+
+        throw new Exception("Could not determine the border character, something went wrong.");
     }
 }
